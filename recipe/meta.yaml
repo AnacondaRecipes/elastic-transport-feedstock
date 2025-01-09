@@ -21,7 +21,7 @@ requirements:
     - setuptools
     - wheel
   run:
-    - python >=3.6
+    - python
     - urllib3 >=1.26.2,<2
 
 test:
@@ -37,10 +37,10 @@ about:
   summary: Transport classes and utilities shared among Python Elastic client libraries
   license: Apache-2.0
   license_file: LICENSE
-  lisense_family: Apache
+  license_family: Apache
   description: |
     Transport classes and utilities shared among Python Elastic client libraries.
-  doc_url: https://elastic.github.io/elastic-transport-python/
+  doc_url: https://github.com/elastic/elastic-transport-python
   dev_url: https://github.com/elastic/elastic-transport-python
 extra:
   recipe-maintainers:
