@@ -1,23 +1,25 @@
 {% set name = "elastic-transport" %}
-{% set version = "8.4.0" %}
+{% set version = "8.17.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/elastic-transport-{{ version }}.tar.gz
-  sha256: b9ad708ceb7fcdbc6b30a96f886609a109f042c0b9d9f2e44403b3133ba7ff10
+  url: https://github.com/elastic/elastic-transport-python/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 58dd66a35cf11577e017d2ffb2d85b53523a0f3faa7f89b4b54882987afcdcb4
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
   number: 0
 
 requirements:
   host:
     - pip
-    - python >=3.6
+    - python
+    - setuptools
+    - wheel
   run:
     - python >=3.6
     - urllib3 >=1.26.2,<2
@@ -35,7 +37,11 @@ about:
   summary: Transport classes and utilities shared among Python Elastic client libraries
   license: Apache-2.0
   license_file: LICENSE
-
+  lisense_family: Apache
+  description: |
+    Transport classes and utilities shared among Python Elastic client libraries.
+  doc_url: https://elastic.github.io/elastic-transport-python/
+  dev_url: https://github.com/elastic/elastic-transport-python
 extra:
   recipe-maintainers:
     - sethmlarson
