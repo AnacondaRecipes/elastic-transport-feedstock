@@ -23,6 +23,7 @@ requirements:
   run:
     - python
     - urllib3 >=1.26.2,<3
+    - certifi
   run_constrained:
     - httpcore <1.0.6
 
