@@ -22,7 +22,9 @@ requirements:
     - wheel
   run:
     - python
-    - urllib3 >=1.26.2,<2
+    - urllib3 >=1.26.2,<3
+  run_constrained:
+    - httpcore <1.0.6
 
 test:
   imports:
