@@ -40,6 +40,8 @@ requirements:
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_transport.py::test_httpbin" %}
 # E       fixture 'httpbin_secure' not found
 {% set ignore_tests = ignore_tests + " --ignore=tests/node/test_urllib3_chain_certs.py" %}
+# E       assert (241210.464284625 - 241210.218484916) <= 0.15
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_sniffed_nodes_added_to_pool" %}
 
 test:
   source_files:
