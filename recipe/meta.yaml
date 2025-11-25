@@ -1,5 +1,5 @@
 {% set name = "elastic-transport" %}
-{% set version = "8.17.0" %}
+{% set version = "9.2.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/elastic/elastic-transport-python/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 58dd66a35cf11577e017d2ffb2d85b53523a0f3faa7f89b4b54882987afcdcb4
+  sha256: 98a47630facd0f5a36208a8f177bcda950465b6a940b4d896e4b6dcb6a621bf8
 
 build:
-  skip: true  # [py<38]
+  skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
   number: 0
 
@@ -24,16 +24,45 @@ requirements:
     - python
     - urllib3 >=1.26.2,<3
     - certifi
-  run_constrained:
-    - httpcore <1.0.6
+    - sniffio
+
+# E   ModuleNotFoundError: No module named 'respx'
+{% set ignore_tests = " --ignore=tests/node/test_http_httpx.py" %}
+# E       fixture 'httpbin' not found - pytest-httpbin is not available
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_logging.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_httpbin.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_urllib3_chain_certs.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_http_aiohttp.py" %}
+{% set deselect_tests = " --deselect=tests/async_/test_async_transport.py::test_async_transport_httpbin" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_httpbin" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_simple_request" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_node" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_transport.py::test_httpbin" %}
+# E       fixture 'httpbin_secure' not found
+{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_urllib3_chain_certs.py" %}
 
 test:
+  source_files:
+    - tests
   imports:
     - elastic_transport
-  commands:
-    - pip check
   requires:
     - pip
+    - pytest
+    - trustme
+    - pytest-httpserver
+    - requests
+    - orjson
+    - opentelemetry-sdk
+    - anyio
+    - aiohttp
+    - httpx
+    - pytest-asyncio
+    - trio
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest -v tests {{ ignore_tests }} {{ deselect_tests }}
 
 about:
   home: https://github.com/elastic/elastic-transport-python
@@ -45,6 +74,7 @@ about:
     Transport classes and utilities shared among Python Elastic client libraries.
   doc_url: https://github.com/elastic/elastic-transport-python
   dev_url: https://github.com/elastic/elastic-transport-python
+
 extra:
   recipe-maintainers:
     - sethmlarson
