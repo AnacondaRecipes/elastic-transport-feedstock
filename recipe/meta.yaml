@@ -1,28 +1,12 @@
 {% set name = "elastic-transport" %}
 {% set version = "9.4.2" %}
-{% set ignore_tests = " --ignore=tests/node/test_http_httpx.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_logging.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_httpbin.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_urllib3_chain_certs.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_http_aiohttp.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_urllib3_chain_certs.py" %}
-{% set deselect_tests = " --deselect=tests/async_/test_async_transport.py::test_async_transport_httpbin" %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_httpbin"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_simple_request"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_node"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_transport.py::test_httpbin"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_sniffed_nodes_added_to_pool"' %}
 
-# E   ModuleNotFoundError: No module named 'respx'
-# E       fixture 'httpbin' not found - pytest-httpbin is not available
-# E       fixture 'httpbin_secure' not found
-# E       assert (241210.464284625 - 241210.218484916) <= 0.15
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/elastic/elastic-transport-python/archive/refs/tags/v{{ version }}.tar.gz
+  url: https://github.com/{{ name.split('-')[0] }}/{{ name }}-python/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 4d7667a9f1f7c60c04441785f32d06495e9f9999965adf82660e7c0a59f7b8d5
 
 build:
@@ -41,6 +25,24 @@ requirements:
     - urllib3 >=2,<3
     - certifi
     - sniffio
+
+# E   ModuleNotFoundError: No module named 'respx'
+# E       fixture 'httpbin' not found - pytest-httpbin is not available
+# E       fixture 'httpbin_secure' not found
+# E       assert (241210.464284625 - 241210.218484916) <= 0.15
+
+{% set ignore_tests = " --ignore=tests/node/test_http_httpx.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_logging.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_httpbin.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_urllib3_chain_certs.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_http_aiohttp.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/node/test_urllib3_chain_certs.py" %}
+{% set deselect_tests = " --deselect=tests/async_/test_async_transport.py::test_async_transport_httpbin" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_httpbin" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_simple_request" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_httpbin.py::test_node" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_transport.py::test_httpbin" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_sniffed_nodes_added_to_pool" %}
 
 test:
   source_files:
@@ -63,7 +65,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v tests {{ ignore_tests }} {{ deselect_tests }}
+    - pytest -vv tests {{ ignore_tests }} {{ deselect_tests }}
 
 about:
   home: https://github.com/elastic/elastic-transport-python
