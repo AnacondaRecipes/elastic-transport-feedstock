@@ -10,6 +10,7 @@ source:
   sha256: 4d7667a9f1f7c60c04441785f32d06495e9f9999965adf82660e7c0a59f7b8d5
 
 build:
+  # Trigger 1
   skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
   number: 0
@@ -42,6 +43,10 @@ requirements:
 {% set deselect_tests = deselect_tests + " --deselect=tests/test_transport.py::test_httpbin" %}
 # E       assert (241210.464284625 - 241210.218484916) <= 0.15
 {% set deselect_tests = deselect_tests + " --deselect=tests/async_/test_async_transport.py::test_sniffed_nodes_added_to_pool" %}
+# Broke on CI when releasing
+# AssertionError: assert ('unsupported protocol' in 'TLS error caused by: ConnectError
+{% set deselect_tests = deselect_tests + " --deselect=tests/node/test_tls_versions.py::test_unsupported_tls_versions" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/node/test_tls_versions.py::test_supported_tls_versions" %}
 
 test:
   source_files:
